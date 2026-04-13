@@ -173,8 +173,16 @@
     .modal-info .price { font-size: 2.5rem; font-weight: 800; color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,240,255,0.3); }
     .modal-info .old-price { font-size: 1.2rem; color: #555566; text-decoration: line-through; margin-left: 12px; }
     
-    .modal-info .desc { color: var(--text-main); line-height: 1.6; font-size: 14px; margin-bottom: 30px; flex: 1; }
+    .modal-info .desc { color: var(--text-main); line-height: 1.6; font-size: 14px; margin-bottom: 12px; }
     
+    .reviews-section { margin-bottom: 24px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; flex: 1; overflow-y: auto; max-height: 200px; }
+    .reviews-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .review-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(138,43,226,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px; }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .review-author { font-size: 12px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; }
+    .review-stars { color: #ffaa00; font-size: 10px; letter-spacing: 2px; }
+    .review-text { font-size: 11px; color: var(--text-muted); line-height: 1.4; font-style: italic; }
+
     .modal-actions { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
     
     @media (max-width: 768px) {
@@ -304,6 +312,12 @@
         <span class="old-price" id="modal-old-price"></span>
       </div>
       <div class="desc" id="modal-desc">Descrição do produto vai aqui.</div>
+      
+      <div class="reviews-section">
+        <div class="reviews-title">Comentários de Clientes</div>
+        <div id="modal-reviews-list"></div>
+      </div>
+
       <div class="modal-actions">
         <button class="btn-primary" id="btn-modal-cart" onclick="">Adicionar ao Carrinho</button>
         <button class="btn-whatsapp" id="btn-modal-wa" onclick="">Comprar Imediatamente (WhatsApp)</button>
@@ -428,6 +442,13 @@
     `).join('');
   }
 
+  const poolReviews = [
+    { author: 'Kyky', comment: 'Chegou rápido e super bem embalado. A performance está absurda!' },
+    { author: 'Célia', comment: 'Atendimento nota 10 no WhatsApp. Peça em estado de nova.' },
+    { author: 'Betão', comment: 'Me surpreendi muito. Rodando todos os meus jogos no ultra sem esquentar.' },
+    { author: 'Elenir', comment: 'Comprei com receio, mas a garantia e o suporte me deixaram tranquila. Excelente.' }
+  ];
+
   /* MODAL LOGIC */
   function openProductModal(id) {
     const p = products.find(prod => prod.id === id);
@@ -439,6 +460,17 @@
     document.getElementById('modal-price').textContent = p.price;
     document.getElementById('modal-old-price').textContent = p.old || '';
     document.getElementById('modal-desc').textContent = p.desc || 'Produto de altíssima qualidade verificado em nosso laboratório gamer.';
+
+    const reviewsHtml = [poolReviews[id % 4], poolReviews[(id + 1) % 4]]
+      .map(r => `
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-author">@${r.author}</span>
+          <span class="review-stars">★★★★★</span>
+        </div>
+        <div class="review-text">"${r.comment}"</div>
+      </div>`).join('');
+    document.getElementById('modal-reviews-list').innerHTML = reviewsHtml;
 
     const thumbsContainer = document.getElementById('modal-thumbs');
     const imagesToUse = (p.imgs && p.imgs.length > 0) ? p.imgs : [p.img];
